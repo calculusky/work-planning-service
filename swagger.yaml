@@ -1,0 +1,152 @@
+tags:
+  - name: users
+    description: user operations
+  - name: scheduler
+    description: scheduler operations
+
+paths:
+  /users:
+    # [GET] users
+    get:
+      tags:
+        - users
+      summary: Find All Workers
+      responses:
+        200:
+          description: "OK"
+        500:
+          description: "Internal Server Error"
+
+    # [POST] users
+    post:
+      tags:
+        - users
+      summary: Add new worker
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/createWorker"
+          required: true
+      responses:
+        201:
+          description: "successfully creates a new worker"
+        400:
+          description: "Bad Request"
+        409:
+          description: "Conflict"
+        500:
+          description: "Internal Server Error"
+
+  /users/{userId}:
+    # [GET] users/userId
+    get:
+      tags:
+        - users
+      summary: Find a Worker
+      parameters:
+        - name: userId
+          in: path
+          type: integer
+      responses:
+        200:
+          description: "Fetches the worker details"
+        404:
+          description: "Worker not found"
+        500:
+          description: "Internal Server Error"
+
+    # [PATCH] users/userId
+    patch:
+      tags:
+        - users
+      summary: Update a worker
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          type: integer
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/updateWorker"
+          required: true
+      responses:
+        200:
+          description: "successfully updates a worker"
+        400:
+          description: "Bad Request"
+        500:
+          description: "Internal Server Error"
+
+    # [DELETE] users/userId
+    delete:
+      tags:
+        - users
+      summary: Deletes a worker
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userId
+          in: path
+          type: integer
+          required: true
+      responses:
+        200:
+          description: "successfully deletes a worker"
+        400:
+          description: "Bad Request"
+        404:
+          description: "Worker not found"
+        500:
+          description: "Internal Server Error"
+
+  /schedule/generate-workers-shift:
+    # [GET]
+    get:
+      tags:
+        - scheduler
+      summary: Generates workers shift
+      description: Automatically Generates a 24hr workers-shift-timetable from the already saved workers data
+      responses:
+        200:
+          description: "Successfully generates the timetable"
+        500:
+          description: "Internal Server Error"
+
+# --------------------------definitions--------------------------
+definitions:
+  createWorker:
+    type: object
+    required:
+      - firstName
+      - lastName
+      - email
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+        format: email
+
+  updateWorker:
+    type: object
+    required:
+      - firstName
+      - lastName
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
